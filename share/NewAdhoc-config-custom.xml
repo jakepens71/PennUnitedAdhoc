@@ -1,0 +1,272 @@
+<alfresco-config>
+<config>
+      <forms>
+         <dependencies>
+            <css src="/components/form/wfpennunited.css" />
+            <js src="/components/form/wfpennunited.js" />
+            <js src="/yui/event/event.js" />
+         </dependencies>
+      </forms>   
+   </config>
+
+    <config condition="newadhoc:operations" evaluator="task-type">
+        <forms>
+         <form>
+            <field-visibility>
+               <show id="newadhoc:wfName" />
+               <show id="newadhoc:previousComment" />
+               <show id="taskOwner" />
+               <show id="bpm:priority" />
+               <show id="bpm:dueDate" />
+               <show id="bpm:status" />
+               <show id="packageItems" />
+               <show id="bpm:comment" />
+               <show id="newadhoc:operationsOutcome" />
+            </field-visibility>
+            <appearance>
+               <set id="" appearance="title" label-id="workflow.set.task.info" />
+               <set id="info" appearance="" template="/org/alfresco/components/form/3-column-set.ftl" />
+               <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
+               <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="response" appearance="title" label-id="workflow.set.response" />
+
+               <field id="newadhoc:wfName" label-id="newadhoc.workflow.field.message" description-id="newadhoc.workflow.field.message">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="newadhoc:previousComment" label-id="newadhoc.workflow.field.prevcomment">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="taskOwner" set="info" />
+               <field id="bpm:priority" set="info" read-only="true">
+                  <control template="/org/alfresco/components/form/controls/workflow/ftkpriority.ftl" />
+               </field>
+               <field id="bpm:dueDate" set="info" label-id="workflow.field.due">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="bpm:status" set="progress" />
+               <field id="packageItems" set="items" />
+               <field id="bpm:comment" label-id="workflow.field.comment" set="response">
+                  <control template="/org/alfresco/components/form/controls/textarea.ftl">
+                     <control-param name="style">width: 95%</control-param>
+                  </control>
+               </field>
+               <field id="newadhoc:operationsOutcome" label-id="workflow.field.outcome" set="response">
+                  <control template="/org/alfresco/components/form/controls/workflow/activiti-transitions.ftl" />
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+    
+    <config condition="newadhoc:engineering" evaluator="task-type">
+       <forms>
+         <form>
+            <field-visibility>
+               <show id="newadhoc:wfName" />
+               <show id="newadhoc:previousComment" />
+               <show id="taskOwner" />
+               <show id="bpm:priority" />
+               <show id="bpm:dueDate" />
+               <show id="bpm:status" />
+               <show id="packageItems" />
+               <show id="bpm:comment" />
+               <show id="newadhoc:engineeringOutcome" />
+            </field-visibility>
+            <appearance>
+               <set id="" appearance="title" label-id="workflow.set.task.info" />
+               <set id="info" appearance="" template="/org/alfresco/components/form/3-column-set.ftl" />
+               <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
+               <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="response" appearance="title" label-id="workflow.set.response" />
+
+               <field id="newadhoc:wfName" label-id="newadhoc.workflow.field.message" description-id="newadhoc.workflow.field.message">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="newadhoc:previousComment" label-id="newadhoc.workflow.field.prevcomment">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="taskOwner" set="info" />
+               <field id="bpm:priority" set="info" read-only="true">
+                  <control template="/org/alfresco/components/form/controls/workflow/ftkpriority.ftl" />
+               </field>
+               <field id="bpm:dueDate" set="info" label-id="workflow.field.due">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="bpm:status" set="progress" />
+               <field id="packageItems" set="items" />
+               <field id="bpm:comment" label-id="workflow.field.comment" set="response">
+                  <control template="/org/alfresco/components/form/controls/textarea.ftl">
+                     <control-param name="style">width: 95%</control-param>
+                  </control>
+               </field>
+               <field id="newadhoc:engineeringOutcome" label-id="workflow.field.outcome" set="response">
+                  <control template="/org/alfresco/components/form/controls/workflow/activiti-transitions.ftl" />
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+    
+    <config condition="newadhoc:ordermaterials" evaluator="task-type">
+       <forms>
+         <form>
+            <field-visibility>
+               <show id="newadhoc:wfName" />
+               <show id="newadhoc:previousComment" />
+               <show id="taskOwner" />
+               <show id="bpm:priority" />
+               <show id="bpm:dueDate" />
+               <show id="bpm:status" />
+               <show id="packageItems" />
+               <show id="bpm:comment" />
+               <show id="newadhoc:ordermaterialsOutcome" />
+            </field-visibility>
+            <appearance>
+               <set id="" appearance="title" label-id="workflow.set.task.info" />
+               <set id="info" appearance="" template="/org/alfresco/components/form/3-column-set.ftl" />
+               <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
+               <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="response" appearance="title" label-id="workflow.set.response" />
+
+               <field id="newadhoc:wfName" label-id="newadhoc.workflow.field.message" description-id="newadhoc.workflow.field.message">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="newadhoc:previousComment" label-id="pennUnited.workflow.field.prevcomment">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="taskOwner" set="info" />
+               <field id="bpm:priority" set="info" read-only="true">
+                  <control template="/org/alfresco/components/form/controls/workflow/ftkpriority.ftl" />
+               </field>
+               <field id="bpm:dueDate" set="info" label-id="workflow.field.due">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="bpm:status" set="progress" />
+               <field id="packageItems" set="items" />
+               <field id="bpm:comment" label-id="workflow.field.comment" set="response">
+                  <control template="/org/alfresco/components/form/controls/textarea.ftl">
+                     <control-param name="style">width: 95%</control-param>
+                  </control>
+               </field>
+               <field id="newadhoc:ordermaterialsOutcome" label-id="workflow.field.outcome" set="response">
+                  <control template="/org/alfresco/components/form/controls/workflow/activiti-transitions.ftl" />
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+    
+    <config condition="newadhoc:frontoffice" evaluator="task-type">
+         <forms>
+         <form>
+            <field-visibility>
+               <show id="newadhoc:wfName" />
+               <show id="newadhoc:previousComment" />
+               <show id="taskOwner" />
+               <show id="bpm:priority" />
+               <show id="bpm:dueDate" />
+               <show id="bpm:status" />
+               <show id="packageItems" />
+               <show id="bpm:comment" />
+               <show id="newadhoc:frontofficeOutcome" />
+            </field-visibility>
+            <appearance>
+               <set id="" appearance="title" label-id="workflow.set.task.info" />
+               <set id="info" appearance="" template="/org/alfresco/components/form/3-column-set.ftl" />
+               <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
+               <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="response" appearance="title" label-id="workflow.set.response" />
+
+               <field id="newadhoc:wfName" label-id="newadhoc.workflow.field.message" description-id="newadhoc.workflow.field.message">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="newadhoc:previousComment" label-id="pennUnited.workflow.field.prevcomment">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="taskOwner" set="info" />
+               <field id="bpm:priority" set="info" read-only="true">
+                  <control template="/org/alfresco/components/form/controls/workflow/ftkpriority.ftl" />
+               </field>
+               <field id="bpm:dueDate" set="info" label-id="workflow.field.due">
+                  <control template="/org/alfresco/components/form/controls/info.ftl" />
+               </field>
+               <field id="bpm:status" set="progress" />
+               <field id="packageItems" set="items" />
+               <field id="bpm:comment" label-id="workflow.field.comment" set="response">
+                  <control template="/org/alfresco/components/form/controls/textarea.ftl">
+                     <control-param name="style">width: 95%</control-param>
+                  </control>
+               </field>
+               <field id="newadhoc:frontofficeOutcome" label-id="workflow.field.outcome" set="response">
+                  <control template="/org/alfresco/components/form/controls/workflow/activiti-transitions.ftl" />
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+    
+    <config evaluator="string-compare" condition="activiti$NewAdhoc">
+      <forms>        
+         <form>
+            <field-visibility>
+               <show id="bpm:workflowDescription" />
+               <show id="bpm:workflowDueDate" />
+               <show id="bpm:workflowPriority" />
+               <show id="bpm:status" />
+               <show id="packageItems" />
+               <show id="bpm:sendEMailNotifications" />
+               <show id="bpm:comment" />
+               <show id="newadhoc:productCode" />
+            </field-visibility>
+            <appearance>
+               <set id="" appearance="title" label-id="workflow.set.task.info" />
+               <set id="info" appearance="" template="/org/alfresco/components/form/3-column-set.ftl" />
+               <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
+               <set id="items" appearance="title" label-id="workflow.set.items" />
+               <set id="other" appearance="title" label-id="workflow.set.other" />
+               
+               <field id="bpm:workflowDescription" label-id="newadhoc.workflow.field.message" description-id="newadhoc.workflow.field.message"  mandatory="true">
+                  <control template="/org/alfresco/components/form/controls/textarea.ftl">
+                     <control-param name="style">width: 95%</control-param>
+                  </control>
+               </field>
+               <field id="bpm:workflowPriority" label-id="workflow.field.priority" set="info">
+                  <control template="/org/alfresco/components/form/controls/workflow/ftkpriority.ftl" />
+               </field>
+               <field id="bpm:workflowDueDate" set="info" label-id="workflow.field.due" />
+               <field id="bpm:status" set="progress" />
+               <field id="packageItems" set="items" />
+               <field id="bpm:sendEMailNotifications" set="other" />
+               <field id="bpm:comment" label-id="workflow.field.comment">
+                  <control template="/org/alfresco/components/form/controls/textarea.ftl" set="other">
+                     <control-param name="style">width: 95%</control-param>
+                  </control>
+               </field>
+
+               <field id="newadhoc:productCode" set="info"
+                      label-id="pennUnited.workflow.field.productCode"
+                      description-id="pennUnited.workflow.field.productCode">
+                   <control template="/org/alfresco/components/form/controls/selectone.ftl" />
+               </field>
+            </appearance>
+         </form>
+      </forms>
+   </config>
+   
+   <!-- For the WF's that I've Started Page -->
+   <config evaluator="task-type" condition="newadhoc:alfrescoStartevent1">
+      <forms>
+         <form id="workflow-details">
+            <field-visibility>
+               <show id="bpm:sendEMailNotifications" />
+               <show id="packageItems" />
+            </field-visibility>
+            <appearance>
+               <set id="" appearance="title" label-id="workflow.set.workflow.more_info" />
+               <set id="items" appearance="title" label-id="workflow.set.items" />
+               <field id="packageItems" set="items" />
+            </appearance>
+         </form>
+      </forms>
+  </config>
+</alfresco-config>

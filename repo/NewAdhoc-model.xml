@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<model name="newadhoc:workflowmodel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+
+    <!-- Imports are required to allow references to definitions in other models -->
+    <imports>
+        <import uri="http://www.alfresco.org/model/dictionary/1.0"
+            prefix="d" />
+        <import uri="http://www.alfresco.org/model/bpm/1.0"
+            prefix="bpm" />
+        <import uri="http://www.alfresco.org/model/workflow/1.0" 
+            prefix="wf"/>
+    </imports>
+
+    <!-- Introduction of new namespaces defined by this model -->
+    <namespaces>
+        <namespace uri="http://www.pennuited.com/wfmodel/pennunited/1.0"
+            prefix="newadhoc" />
+    </namespaces>
+    
+   <constraints>
+   
+      <constraint name="newadhoc:productCodeList" type="LIST">
+         <title>Product Code List</title>
+         <parameter name="allowedValues">
+            <list>
+               <value></value>
+               <value>CPM</value>
+            </list>
+         </parameter>
+         <parameter name="caseSensitive"><value>true</value></parameter>
+      </constraint>
+    </constraints>
+      
+     <types>   
+      
+      <type name="newadhoc:basePennUnitedWF">
+         <parent>wf:activitiReviewTask</parent>
+         <properties>
+            <property name="newadhoc:previousComment">
+               <title>Placeholder to display comment from previous task at Task Level</title>
+               <type>d:text</type> 
+            </property>
+            <property name="newadhoc:wfName">
+               <title>Placeholder to display comment from previous task at Task Level</title>
+               <type>d:text</type> 
+            </property>
+         </properties>
+        <overrides>
+            <property name="bpm:packageActionGroup">
+                <default>add_package_item_actions</default>
+            </property>
+            <property name="bpm:packageItemActionGroup">
+                <default>edit_and_remove_package_item_actions</default>
+            </property>
+        </overrides>
+      </type>
+ 
+ 
+ 
+    	 <type name="newadhoc:alfrescoStartevent1">
+    	 <title>PUT Adhoc Workflow</title>
+         <parent>bpm:startTask</parent>
+         <overrides>
+            <property name="bpm:priority">
+                <default>3</default>
+            </property>
+            <property name="bpm:workflowPriority">
+                <default>3</default>
+            </property>
+         </overrides>
+         <mandatory-aspects>
+            <aspect>newadhoc:productCodeInfo</aspect>
+         </mandatory-aspects>
+      </type> 
+      
+    
+        <type name="newadhoc:operations">
+            <parent>newadhoc:basePennUnitedWF</parent>
+            <properties>
+            	<property name="newadhoc:operationsOutcome">
+            		<type>d:text</type>
+            		<default>Send to Engineering</default>
+            		<constraints>
+            			<constraint name="newadhoc:operationsOutcomeOptions" type ="LIST">
+            				<parameter name="allowedValues">
+            					<list>
+            						<value>Send to Engineering</value>
+            					</list>
+            				</parameter>
+            			</constraint>
+            		</constraints>
+            	</property>
+            </properties>
+            <overrides>
+            	<property name="bpm:outcomePropertyName">
+            		<default>{http://newadhoc.com/prefix/newadhoc}operationsOutcome</default>
+            	</property>
+            </overrides>
+        </type>
+        
+        <type name="newadhoc:engineering">
+            <parent>newadhoc:basePennUnitedWF</parent>
+            <properties>
+            	<property name="newadhoc:engineeringOutcome">
+            		<type>d:text</type>
+            		<default>Finished Making Items</default>
+            		<constraints>
+            			<constraint name="newadhoc:engineeringOutcomeOptions" type ="LIST">
+            				<parameter name="allowedValues">
+            					<list>
+            						<value>Send to Front Office</value>
+            						<value>Send to Operations</value>
+            					</list>
+            				</parameter>
+            			</constraint>
+            		</constraints>
+            	</property>
+            </properties>
+            <overrides>
+            	<property name="bpm:outcomePropertyName">
+            		<default>{http://newadhoc.com/prefix/newadhoc}engineeringOutcome</default>
+            	</property>
+            </overrides>
+        </type>
+     
+       
+        <type name="newadhoc:ordermaterials">
+             <parent>newadhoc:basePennUnitedWF</parent>
+            <properties>
+            	<property name="newadhoc:ordermaterialsOutcome">
+            		<type>d:text</type>
+            		<default>End Workflow</default>
+            		<constraints>
+            			<constraint name="newadhoc:ordermaterialsOutcomeOptions" type ="LIST">
+            				<parameter name="allowedValues">
+            					<list>
+            						<value>Send to Operations</value>
+            						<value>End Workflow</value>
+            					</list>
+            				</parameter>
+            			</constraint>
+            		</constraints>
+            	</property>
+            </properties>
+            <overrides>
+            	<property name="bpm:outcomePropertyName">
+            		<default>{http://newadhoc.com/prefix/newadhoc}ordermaterialsOutcome</default>
+            	</property>
+            </overrides>
+        </type>
+     
+        
+        <type name="newadhoc:frontoffice">
+            <parent>newadhoc:basePennUnitedWF</parent>
+            <properties>
+            	<property name="newadhoc:frontofficeOutcome">
+            		<type>d:text</type>
+            		<default>End Workflow</default>
+            		<constraints>
+            			<constraint name="newadhoc:frontofficeOutcomeOptions" type ="LIST">
+            				<parameter name="allowedValues">
+            					<list>
+            						<value>Send to Engineering</value>
+            						<value>End Workflow</value>
+            					</list>
+            				</parameter>
+            			</constraint>
+            		</constraints>
+            	</property>
+            </properties>
+            <overrides>
+            	<property name="bpm:outcomePropertyName">
+            		<default>{http://newadhoc.com/prefix/newadhoc}frontofficeOutcome</default>
+            	</property>
+            </overrides>
+        </type>
+    </types>
+    
+    <aspects>
+        <aspect name="newadhoc:productCodeInfo">
+         <title>Product Code Info</title>
+         <properties>          
+             <property name="newadhoc:productCode">
+                 <type>d:text</type>
+                 <default></default>
+	         <constraints>
+                    <constraint ref="newadhoc:productCodeList" />
+                 </constraints>
+             </property>
+         </properties>
+      </aspect>
+        <aspect name="newadhoc:workflowInfo">
+        	<title>PUT Customized Adhoc Workflow</title>
+        	<properties>
+        		<property name="newadhoc:id">
+        			<title>Workflow ID</title>
+        			<type>d:text</type>
+        		</property>
+        		<property name="newadhoc:workflowname">
+        			<title>Workflow Name</title>
+        			<type>d:text</type>
+        		</property>
+        		<property name="newadhoc:initiator">
+        			<title>Initiator</title>
+        			<type>d:text</type>
+        		</property>
+        		<property name="newadhoc:startDate">
+        			<title>Workflow Start Date</title>
+        			<type>d:datetime</type>
+        			<index enabled="true">
+        				<atomic>true</atomic>
+        				<stored>false</stored>
+        				<tokenised>both</tokenised>
+        			</index>
+        		</property>
+        		<property name="newadhoc:endDate">
+        			<title>Workflow End Date</title>
+        			<type>d:datetime</type>
+        			<index enabled="true">
+        				<atomic>true</atomic>
+        				<stored>false</stored>
+        				<tokenised>both</tokenised>
+        			</index>
+        		</property>
+        	</properties>
+        </aspect>
+    </aspects>
+</model>

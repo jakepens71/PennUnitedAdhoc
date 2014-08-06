@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+			 xmlns:activiti="http://activiti.org/bpmn" 
+			 xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+			 xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" 
+			 xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" 
+			 typeLanguage="http://www.w3.org/2001/XMLSchema" 
+			 expressionLanguage="http://www.w3.org/1999/XPath" 
+			targetNamespace="http://www.activiti.org/test">
+  
+  <process id="NewAdhoc" name="Penn United Adhoc" isExecutable="true">
+    
+     <extensionElements>
+      <activiti:executionListener event="start" class="org.alfresco.repo.workflow.activiti.listener.ScriptExecutionListener">
+        <activiti:field name="script">
+          <activiti:string><![CDATA[if(newadhoc_productCode != null && newadhoc_productCode.length != 0)
+                 {
+                    var wfNameWithProdcode = newadhoc_productCode + "-" + bpm_description;
+                    execution.setVariable('bpm_description', wfNameWithProdcode); 
+                    execution.setVariable('bpm_workflowDescription', wfNameWithProdcode);
+                 }]]></activiti:string>
+        </activiti:field>
+      </activiti:executionListener>
+    </extensionElements>
+    
+    
+    <startEvent id="alfrescoStartevent1" name="Alfresco start" activiti:formKey="newadhoc:alfrescoStartevent1"></startEvent>
+    <sequenceFlow id="flow18" sourceRef="alfrescoStartevent1" targetRef="parallelGateway1">
+      <extensionElements>
+        <activiti:executionListener event="start" class="org.alfresco.repo.workflow.activiti.listener.ScriptExecutionListener">
+          <activiti:field name="runAs">
+            <activiti:string><![CDATA[System]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="script">
+            <activiti:string><![CDATA[var localWOTravellerName = null;
+                var children = bpm_package.getChildren();
+                for( var i=0; i<children.length; i++)
+                {
+                    var thisNode = children[i];
+                    localWOTravellerName = thisNode.properties['cm:name'];
+                    if(!thisNode.hasAspect("newadhoc:workflowInfo"))
+                    {
+                        thisNode.addAspect("newadhoc:workflowInfo");
+                    }
+                    thisNode.properties['newadhoc:id'] = workflowinstanceid;
+                    thisNode.properties['newadhoc:workflowname'] = bpm_workflowDescription;
+                    thisNode.properties['newadhoc:initiator'] = initiator.properties["cm:firstName"] + " " + initiator.properties["cm:lastName"];
+                    thisNode.properties['newadhoc:startDate'] = Date.now();
+                    thisNode.properties['newadhoc:endDate'] = null;               
+                    thisNode.save();
+                }
+                
+                execution.setVariable('WOTravellerName', localWOTravellerName);]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </sequenceFlow>
+    <parallelGateway id="parallelGateway1"></parallelGateway>
+    
+    <userTask id="userTask2" name="Engineering" activiti:candidateGroups="GROUP_WF_Engineering" activiti:formKey="newadhoc:engineering">
+      <extensionElements>
+        <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('newadhoc_previousComment', bpm_comment);
+            execution.setVariable('newadhoc_wfName', bpm_workflowDescription);
+            execution.setVariable('newadhoc_comment', "");
+            if (typeof bpm_workflowDueDate != 'undefined') task.dueDate = bpm_workflowDueDate;
+			if (typeof bpm_workflowPriority != 'undefined') task.priority = bpm_workflowPriority;;]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+        <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('wf_reviewOutcome', task.getVariable('newadhoc_engineeringOutcome'));]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    
+    <sequenceFlow id="sequenceFlow3" sourceRef="parallelGateway1" targetRef="userTask2"></sequenceFlow>
+    <userTask id="userTask3" name="Order Materials" activiti:candidateGroups="GROUP_WF_CPMMaterialHandler" activiti:formKey="newadhoc:ordermaterials">
+      <extensionElements>
+        <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('newadhoc_previousComment', bpm_comment);
+            execution.setVariable('newadhoc_wfName', bpm_workflowDescription);
+            execution.setVariable('newadhoc_comment', "");
+            if (typeof bpm_workflowDueDate != 'undefined') task.dueDate = bpm_workflowDueDate;
+			if (typeof bpm_workflowPriority != 'undefined') task.priority = bpm_workflowPriority;;]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+        <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('wf_reviewOutcome', task.getVariable('newadhoc_ordermaterialsOutcome'));]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    
+    <sequenceFlow id="sequenceFlow4" sourceRef="parallelGateway1" targetRef="userTask3"></sequenceFlow>
+    
+    <userTask id="userTask4" name="Front Office" activiti:candidateGroups="GROUP_WF_Operations" activiti:formKey="newadhoc:frontoffice">
+      <extensionElements>
+        <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('newadhoc_previousComment', bpm_comment);
+            execution.setVariable('newadhoc_wfName', bpm_workflowDescription);
+            execution.setVariable('bpm_comment', "");
+            if (typeof bpm_workflowDueDate != 'undefined') task.dueDate = bpm_workflowDueDate;
+			if (typeof bpm_workflowPriority != 'undefined') task.priority = bpm_workflowPriority;;]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+        <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('wf_reviewOutcome', task.getVariable('newadhoc_frontofficeOutcome'));]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="usertask1" name="Operations" activiti:candidateGroups="GROUP_WF_Operations" activiti:formKey="newadhoc:operations">
+      <extensionElements>
+        <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('newadhoc_previousComment', bpm_comment);
+            execution.setVariable('newadhoc_wfName', bpm_workflowDescription);
+            execution.setVariable('bpm_comment', "");
+            if (typeof bpm_workflowDueDate != 'undefined') task.dueDate = bpm_workflowDueDate;
+			if (typeof bpm_workflowPriority != 'undefined') task.priority = bpm_workflowPriority;;]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+        <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('wf_reviewOutcome', task.getVariable('newadhoc_operationsOutcome'));
+                    execution.setVariable('bpm_comment', task.getVariable('bpm_comment'));]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow4" sourceRef="userTask3" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow5" name="Send to Operations" sourceRef="exclusivegateway1" targetRef="usertask1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Send to Operations'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow7" name="Send to Engineering" sourceRef="usertask1" targetRef="userTask2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Send to Engineering'}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow8" sourceRef="userTask4" targetRef="exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="flow10" name="Send to Engineering" sourceRef="exclusivegateway2" targetRef="userTask2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Send to Engineering'}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow11" sourceRef="userTask2" targetRef="exclusivegateway3"></sequenceFlow>
+    <sequenceFlow id="flow12" name="Send to Front Office" sourceRef="exclusivegateway3" targetRef="userTask4">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Send to Front Office'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow13" name="Send to Operations" sourceRef="exclusivegateway3" targetRef="usertask1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Send to Operations'}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow15" name="End Workflow" sourceRef="exclusivegateway2" targetRef="parallelgateway1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'End Workflow'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow16" name="End Workflow" sourceRef="exclusivegateway1" targetRef="parallelgateway1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'End Workflow'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow17" sourceRef="parallelgateway1" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_NewAdhoc">
+    <bpmndi:BPMNPlane bpmnElement="NewAdhoc" id="BPMNPlane_NewAdhoc">
+      <bpmndi:BPMNShape bpmnElement="alfrescoStartevent1" id="BPMNShape_alfrescoStartevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="120.0" y="92.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelGateway1" id="BPMNShape_parallelGateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="230.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask2" id="BPMNShape_userTask2">
+        <omgdc:Bounds height="60.0" width="100.0" x="320.0" y="0.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask3" id="BPMNShape_userTask3">
+        <omgdc:Bounds height="60.0" width="100.0" x="232.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask4" id="BPMNShape_userTask4">
+        <omgdc:Bounds height="60.0" width="100.0" x="560.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="438.0" y="212.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="370.0" y="219.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="700.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway3" id="BPMNShape_exclusivegateway3">
+        <omgdc:Bounds height="40.0" width="40.0" x="470.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="860.0" y="93.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="780.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="155.0" y="109.0"></omgdi:waypoint>
+        <omgdi:waypoint x="230.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow3" id="BPMNEdge_sequenceFlow3">
+        <omgdi:waypoint x="270.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="282.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="282.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="30.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow4" id="BPMNEdge_sequenceFlow4">
+        <omgdi:waypoint x="270.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="282.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="282.0" y="190.0"></omgdi:waypoint>
+        <omgdi:waypoint x="282.0" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="332.0" y="240.0"></omgdi:waypoint>
+        <omgdi:waypoint x="370.0" y="239.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="410.0" y="239.0"></omgdi:waypoint>
+        <omgdi:waypoint x="438.0" y="239.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="93.0" x="359.0" y="205.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="490.0" y="212.0"></omgdi:waypoint>
+        <omgdi:waypoint x="490.0" y="154.0"></omgdi:waypoint>
+        <omgdi:waypoint x="370.0" y="154.0"></omgdi:waypoint>
+        <omgdi:waypoint x="370.0" y="102.0"></omgdi:waypoint>
+        <omgdi:waypoint x="370.0" y="60.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="96.0" x="370.0" y="151.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="660.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="700.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="720.0" y="90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="720.0" y="29.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="30.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="96.0" x="630.0" y="-10.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="420.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="490.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="490.0" y="90.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="510.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="110.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="98.0" x="488.0" y="49.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="490.0" y="130.0"></omgdi:waypoint>
+        <omgdi:waypoint x="490.0" y="212.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="93.0" x="500.0" y="190.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="740.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="110.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="68.0" x="739.0" y="77.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="390.0" y="259.0"></omgdi:waypoint>
+        <omgdi:waypoint x="388.0" y="331.0"></omgdi:waypoint>
+        <omgdi:waypoint x="594.0" y="331.0"></omgdi:waypoint>
+        <omgdi:waypoint x="800.0" y="331.0"></omgdi:waypoint>
+        <omgdi:waypoint x="800.0" y="239.0"></omgdi:waypoint>
+        <omgdi:waypoint x="800.0" y="130.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="68.0" x="532.0" y="310.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="820.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="860.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
