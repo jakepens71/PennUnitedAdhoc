@@ -94,7 +94,7 @@
             </properties>
             <overrides>
             	<property name="bpm:outcomePropertyName">
-            		<default>{http://www.formtek.com/wfmodel/pennunited/1.0}CPMoperationsOutcome</default>
+            		<default>{http://www.pennuited.com/wfmodel/pennunited/1.0}CPMoperationsOutcome</default>
             	</property>
             </overrides>
         </type>
@@ -119,7 +119,7 @@
             </properties>
             <overrides>
             	<property name="bpm:outcomePropertyName">
-            		<default>{http://www.formtek.com/wfmodel/pennunited/1.0}engineeringOutcome</default>
+            		<default>{http://www.pennuited.com/wfmodel/pennunited/1.0}engineeringOutcome</default>
             	</property>
             </overrides>
         </type>
@@ -145,7 +145,7 @@
             </properties>
             <overrides>
             	<property name="bpm:outcomePropertyName">
-            		<default>{http://www.formtek.com/wfmodel/pennunited/1.0}CPMorderMaterialOutcome</default>
+            		<default>{http://www.pennuited.com/wfmodel/pennunited/1.0}CPMorderMaterialOutcome</default>
             	</property>
             </overrides>
         </type>
@@ -171,7 +171,7 @@
             </properties>
             <overrides>
             	<property name="bpm:outcomePropertyName">
-            		<default>{http://www.formtek.com/wfmodel/pennunited/1.0}operationsOutcome</default>
+            		<default>{http://www.pennuited.com/wfmodel/pennunited/1.0}operationsOutcome</default>
             	</property>
             </overrides>
         </type>
