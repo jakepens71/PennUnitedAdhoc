@@ -13,7 +13,20 @@
         </activiti:field>
       </activiti:executionListener>
     </extensionElements>
-    <startEvent id="alfrescoStartevent1" name="Alfresco start" activiti:formKey="newadhoc:alfrescoStartevent1"></startEvent>
+    <startEvent id="alfrescoStartevent1" name="Alfresco start" activiti:formKey="newadhoc:alfrescoStartevent1">
+    	<extensionElements>
+           <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+              <activiti:field name="script">
+                 <activiti:string><![CDATA[
+                    execution.setVariable('wf_reviewOutcome', "PUT Adhoc Workflow Submitted");
+                    ]]>
+                 </activiti:string>
+              </activiti:field>
+           </activiti:taskListener>                    
+       </extensionElements>
+    </startEvent>
+    
+    
     <sequenceFlow id="flow18" sourceRef="alfrescoStartevent1" targetRef="parallelGateway1">
       <extensionElements>
         <activiti:executionListener event="start" class="org.alfresco.repo.workflow.activiti.listener.ScriptExecutionListener">
@@ -82,11 +95,13 @@
       </extensionElements>
     </userTask>
     <sequenceFlow id="sequenceFlow4" sourceRef="parallelGateway1" targetRef="userTask3"></sequenceFlow>
+    
     <userTask id="userTask4" name="Front Office" activiti:candidateGroups="GROUP_WF_Operations" activiti:formKey="newadhoc:frontoffice">
       <extensionElements>
         <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
           <activiti:field name="script">
-            <activiti:string><![CDATA[execution.setVariable('newadhoc_previousComment', bpm_comment);
+            <activiti:string>
+            <![CDATA[execution.setVariable('newadhoc_previousComment', bpm_comment);
             execution.setVariable('newadhoc_wfName', bpm_workflowDescription);
             execution.setVariable('bpm_comment', "");
             if (typeof bpm_workflowDueDate != 'undefined') task.dueDate = bpm_workflowDueDate;
@@ -100,6 +115,7 @@
         </activiti:taskListener>
       </extensionElements>
     </userTask>
+    
     <userTask id="usertask1" name="Operations" activiti:candidateGroups="GROUP_WF_Operations" activiti:formKey="newadhoc:operations">
       <extensionElements>
         <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
