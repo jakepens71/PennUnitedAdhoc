@@ -94,7 +94,7 @@
             </properties>
             <overrides>
             	<property name="bpm:outcomePropertyName">
-            		<default>{http://www.pennuited.com/wfmodel/pennunited/1.0}CPMoperationsOutcome</default>
+            		<default>{http://www.pennuited.com/wfmodel/pennunited/1.0}operationsOutcome</default>
             	</property>
             </overrides>
         </type>
@@ -136,7 +136,7 @@
             				<parameter name="allowedValues">
             					<list>
             						<value>Return to Operations</value>
-            						<value>Order Materials and End Task</value>
+            						<value>Order Materials End Workflow</value>
             					</list>
             				</parameter>
             			</constraint>
@@ -145,7 +145,7 @@
             </properties>
             <overrides>
             	<property name="bpm:outcomePropertyName">
-            		<default>{http://www.pennuited.com/wfmodel/pennunited/1.0}CPMorderMaterialOutcome</default>
+            		<default>{http://www.pennuited.com/wfmodel/pennunited/1.0}ordermaterialsOutcome</default>
             	</property>
             </overrides>
         </type>
@@ -162,7 +162,7 @@
             				<parameter name="allowedValues">
             					<list>
             						<value>Return to Engineering</value>
-            						<value>Approved and Ready For Shipment-End Task</value>
+            						<value>Approved End Workflow</value>
             					</list>
             				</parameter>
             			</constraint>
@@ -171,7 +171,7 @@
             </properties>
             <overrides>
             	<property name="bpm:outcomePropertyName">
-            		<default>{http://www.pennuited.com/wfmodel/pennunited/1.0}operationsOutcome</default>
+            		<default>{http://www.pennuited.com/wfmodel/pennunited/1.0}frontofficeOutcome</default>
             	</property>
             </overrides>
         </type>

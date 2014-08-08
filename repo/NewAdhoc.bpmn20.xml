@@ -122,7 +122,7 @@
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow4" sourceRef="userTask3" targetRef="exclusivegateway1"></sequenceFlow>
     <sequenceFlow id="flow5" name="Send to Operations" sourceRef="exclusivegateway1" targetRef="usertask1">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Send to Operations'}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Return to Operations'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow7" name="Send to Engineering" sourceRef="usertask1" targetRef="userTask2">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Send to Engineering'}]]></conditionExpression>
@@ -142,11 +142,11 @@
     </sequenceFlow>
     <endEvent id="endevent1" name="End"></endEvent>
     <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
-    <sequenceFlow id="flow15" name="Approved and ready for shipment-End Task" sourceRef="exclusivegateway2" targetRef="parallelgateway1">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Approved and Ready For Shipment-End Task'}]]></conditionExpression>
+    <sequenceFlow id="flow15" name="Approved End Workflow" sourceRef="exclusivegateway2" targetRef="parallelgateway1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Approved End Workflow'}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow16" name="Order Materials and End Task" sourceRef="exclusivegateway1" targetRef="parallelgateway1">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Order Materials and End Task'}]]></conditionExpression>
+    <sequenceFlow id="flow16" name="Order Materials End Workflow" sourceRef="exclusivegateway1" targetRef="parallelgateway1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Order Materials End Workflow'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow17" sourceRef="parallelgateway1" targetRef="endevent1"></sequenceFlow>
   </process>
@@ -257,7 +257,7 @@
         <omgdi:waypoint x="740.0" y="110.0"></omgdi:waypoint>
         <omgdi:waypoint x="780.0" y="110.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="56.0" width="100.0" x="739.0" y="49.0"></omgdc:Bounds>
+          <omgdc:Bounds height="42.0" width="100.0" x="739.0" y="49.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
