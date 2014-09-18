@@ -86,6 +86,7 @@
             				<parameter name="allowedValues">
             					<list>
             						<value>Send to Engineering</value>
+            						<value>Return to Order Materials</value>
             					</list>
             				</parameter>
             			</constraint>

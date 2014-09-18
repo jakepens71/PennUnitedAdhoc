@@ -13,20 +13,7 @@
         </activiti:field>
       </activiti:executionListener>
     </extensionElements>
-    <startEvent id="alfrescoStartevent1" name="Alfresco start" activiti:formKey="newadhoc:alfrescoStartevent1">
-    	<extensionElements>
-           <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
-              <activiti:field name="script">
-                 <activiti:string><![CDATA[
-                    execution.setVariable('wf_reviewOutcome', "PUT Adhoc Workflow Submitted");
-                    ]]>
-                 </activiti:string>
-              </activiti:field>
-           </activiti:taskListener>                    
-       </extensionElements>
-    </startEvent>
-    
-    
+    <startEvent id="alfrescoStartevent1" name="Alfresco start" activiti:formKey="newadhoc:alfrescoStartevent1"></startEvent>
     <sequenceFlow id="flow18" sourceRef="alfrescoStartevent1" targetRef="parallelGateway1">
       <extensionElements>
         <activiti:executionListener event="start" class="org.alfresco.repo.workflow.activiti.listener.ScriptExecutionListener">
@@ -95,13 +82,11 @@
       </extensionElements>
     </userTask>
     <sequenceFlow id="sequenceFlow4" sourceRef="parallelGateway1" targetRef="userTask3"></sequenceFlow>
-    
     <userTask id="userTask4" name="Front Office" activiti:candidateGroups="GROUP_WF_Operations" activiti:formKey="newadhoc:frontoffice">
       <extensionElements>
         <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
           <activiti:field name="script">
-            <activiti:string>
-            <![CDATA[execution.setVariable('newadhoc_previousComment', bpm_comment);
+            <activiti:string><![CDATA[execution.setVariable('newadhoc_previousComment', bpm_comment);
             execution.setVariable('newadhoc_wfName', bpm_workflowDescription);
             execution.setVariable('bpm_comment', "");
             if (typeof bpm_workflowDueDate != 'undefined') task.dueDate = bpm_workflowDueDate;
@@ -115,7 +100,6 @@
         </activiti:taskListener>
       </extensionElements>
     </userTask>
-    
     <userTask id="usertask1" name="Operations" activiti:candidateGroups="GROUP_WF_Operations" activiti:formKey="newadhoc:operations">
       <extensionElements>
         <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
@@ -140,9 +124,6 @@
     <sequenceFlow id="flow5" name="Send to Operations" sourceRef="exclusivegateway1" targetRef="usertask1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Return to Operations'}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow7" name="Send to Engineering" sourceRef="usertask1" targetRef="userTask2">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Send to Engineering'}]]></conditionExpression>
-    </sequenceFlow>
     <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow8" sourceRef="userTask4" targetRef="exclusivegateway2"></sequenceFlow>
     <sequenceFlow id="flow10" name="Send back to Engineering" sourceRef="exclusivegateway2" targetRef="userTask2">
@@ -165,6 +146,15 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Order Materials End Workflow'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow17" sourceRef="parallelgateway1" targetRef="endevent1"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow19" sourceRef="usertask1" targetRef="exclusivegateway4"></sequenceFlow>
+    
+    <sequenceFlow id="flow20" name="Send Back to Order Materials" sourceRef="exclusivegateway4" targetRef="userTask3">
+    	 <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Return to Order Materials'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow21" name="Send To Engineering" sourceRef="exclusivegateway4" targetRef="userTask2">
+       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Send to Engineering'}]]></conditionExpression>
+    </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_NewAdhoc">
     <bpmndi:BPMNPlane bpmnElement="NewAdhoc" id="BPMNPlane_NewAdhoc">
@@ -201,6 +191,9 @@
       <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
         <omgdc:Bounds height="40.0" width="40.0" x="780.0" y="90.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="BPMNShape_exclusivegateway4">
+        <omgdc:Bounds height="40.0" width="40.0" x="350.0" y="119.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
         <omgdi:waypoint x="155.0" y="109.0"></omgdi:waypoint>
         <omgdi:waypoint x="230.0" y="110.0"></omgdi:waypoint>
@@ -225,17 +218,7 @@
         <omgdi:waypoint x="410.0" y="239.0"></omgdi:waypoint>
         <omgdi:waypoint x="438.0" y="239.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="93.0" x="359.0" y="205.0"></omgdc:Bounds>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-        <omgdi:waypoint x="490.0" y="212.0"></omgdi:waypoint>
-        <omgdi:waypoint x="490.0" y="154.0"></omgdi:waypoint>
-        <omgdi:waypoint x="370.0" y="154.0"></omgdi:waypoint>
-        <omgdi:waypoint x="370.0" y="102.0"></omgdi:waypoint>
-        <omgdi:waypoint x="370.0" y="60.0"></omgdi:waypoint>
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="96.0" x="370.0" y="151.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="93.0" x="345.0" y="205.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
@@ -266,7 +249,7 @@
         <omgdi:waypoint x="490.0" y="130.0"></omgdi:waypoint>
         <omgdi:waypoint x="490.0" y="212.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="42.0" width="100.0" x="500.0" y="190.0"></omgdc:Bounds>
+          <omgdc:Bounds height="42.0" width="100.0" x="560.0" y="190.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
@@ -290,6 +273,26 @@
       <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
         <omgdi:waypoint x="820.0" y="110.0"></omgdi:waypoint>
         <omgdi:waypoint x="860.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+        <omgdi:waypoint x="490.0" y="212.0"></omgdi:waypoint>
+        <omgdi:waypoint x="490.0" y="140.0"></omgdi:waypoint>
+        <omgdi:waypoint x="390.0" y="139.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="350.0" y="139.0"></omgdi:waypoint>
+        <omgdi:waypoint x="279.0" y="139.0"></omgdi:waypoint>
+        <omgdi:waypoint x="282.0" y="210.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="295.0" y="150.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+        <omgdi:waypoint x="370.0" y="119.0"></omgdi:waypoint>
+        <omgdi:waypoint x="370.0" y="60.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="370.0" y="70.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
