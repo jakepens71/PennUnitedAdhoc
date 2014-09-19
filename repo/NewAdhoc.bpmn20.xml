@@ -36,12 +36,10 @@
                     thisNode.properties['newadhoc:workflowname'] = bpm_workflowDescription;
                     thisNode.properties['newadhoc:initiator'] = initiator.properties["cm:firstName"] + " " + initiator.properties["cm:lastName"];
                     thisNode.properties['newadhoc:startDate'] = Date.now();
-                    thisNode.properties['newadhoc:endDate'] = null;
-                    thisNode.properties['newadhoc:engResult'] = null;                   
+                    thisNode.properties['newadhoc:endDate'] = null;                 
                     thisNode.save();
                 }
                 
-                execution.setVariable('WOTravellerName', localWOTravellerName);
 
             ]]>
             </activiti:string>
