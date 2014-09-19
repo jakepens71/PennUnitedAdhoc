@@ -25,7 +25,8 @@
          <parameter name="allowedValues">
             <list>
                <value></value>
-               <value>CPM</value>
+               <value>CPMASY</value>
+               <value>NSR</value>
             </list>
          </parameter>
          <parameter name="caseSensitive"><value>true</value></parameter>
@@ -33,7 +34,6 @@
     </constraints>
       
      <types>   
-      
       <type name="newadhoc:basePennUnitedWF">
          <parent>wf:activitiReviewTask</parent>
          <properties>

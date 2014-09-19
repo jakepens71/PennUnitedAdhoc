@@ -14,35 +14,42 @@
       </activiti:executionListener>
     </extensionElements>
     <startEvent id="alfrescoStartevent1" name="Alfresco start" activiti:formKey="newadhoc:alfrescoStartevent1"></startEvent>
+    
     <sequenceFlow id="flow18" sourceRef="alfrescoStartevent1" targetRef="parallelGateway1">
-      <extensionElements>
+      
+            <extensionElements>
         <activiti:executionListener event="start" class="org.alfresco.repo.workflow.activiti.listener.ScriptExecutionListener">
-          <activiti:field name="runAs">
-            <activiti:string><![CDATA[System]]></activiti:string>
-          </activiti:field>
+          <activiti:field name="runAs"><activiti:string>System</activiti:string></activiti:field>
           <activiti:field name="script">
-            <activiti:string><![CDATA[var localWOTravellerName = null;
+            <activiti:string><![CDATA[                
+                var localWOTravellerName = null;
                 var children = bpm_package.getChildren();
                 for( var i=0; i<children.length; i++)
                 {
                     var thisNode = children[i];
                     localWOTravellerName = thisNode.properties['cm:name'];
-                    if(!thisNode.hasAspect("newadhoc:workflowInfo"))
+                    if(!thisNode.hasAspect("putwf:workflowInfo"))
                     {
-                        thisNode.addAspect("newadhoc:workflowInfo");
+                        thisNode.addAspect("putwf:workflowInfo");
                     }
                     thisNode.properties['newadhoc:id'] = workflowinstanceid;
                     thisNode.properties['newadhoc:workflowname'] = bpm_workflowDescription;
                     thisNode.properties['newadhoc:initiator'] = initiator.properties["cm:firstName"] + " " + initiator.properties["cm:lastName"];
                     thisNode.properties['newadhoc:startDate'] = Date.now();
-                    thisNode.properties['newadhoc:endDate'] = null;             
+                    thisNode.properties['newadhoc:endDate'] = null;
+                    thisNode.properties['newadhoc:engResult'] = null;                   
                     thisNode.save();
                 }
-                execution.setVariable('WOTravellerName', localWOTravellerName);]]></activiti:string>
+                
+                execution.setVariable('WOTravellerName', localWOTravellerName);
+
+            ]]>
+            </activiti:string>
           </activiti:field>
-        </activiti:executionListener>
-      </extensionElements>
+        </activiti:executionListener>  
+        </extensionElements>
     </sequenceFlow>
+    
     <parallelGateway id="parallelGateway1"></parallelGateway>
     <userTask id="userTask2" name="Engineering" activiti:candidateGroups="GROUP_WF_Engineering" activiti:formKey="newadhoc:engineering">
       <extensionElements>
